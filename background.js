@@ -9,7 +9,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       if (!url.includes("yout-ube.com")) {
         chrome.tabs.create({ url: newUrl }, () => {
           // Ferme l'onglet original une fois que le nouveau est ouvert
-          chrome.tabs.remove(tabId);
+        chrome.tabs.update(tabId, { url: "https://www.youtube.com" });
         });
       }
     }
