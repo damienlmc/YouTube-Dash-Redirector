@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Dash Redirector",
+  "version": "1.0",
+  "description": "Redirige les vidéos YouTube vers yout-ube.com automatiquement.",
+  "permissions": ["tabs", "scripting"],
+  "host_permissions": ["*://www.youtube.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "YouTube Dash Redirector"
+  }
+}
+
