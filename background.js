@@ -1,18 +1,27 @@
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete" && tab.url) {
-    const url = tab.url;
+    const url = new URL(tab.url);
 
-    if (url.includes("www.youtube.com/watch")) {
-      const newUrl = url.replace("www.youtube.com", "www.yout-ube.com");
+    // Étape 1 : mémoriser la recherche si présente
+    if (url.pathname === "/results" && url.searchParams.has("search_query")) {
+      chrome.storage.local.set({ lastSearchQuery: url.searchParams.get("search_query") });
+    }
 
-      // Empêche les redirections en boucle (si on revient sur yout-ube.com)
-      if (!url.includes("yout-ube.com")) {
-        chrome.tabs.create({ url: newUrl }, () => {
-          // Ferme l'onglet original une fois que le nouveau est ouvert
-        chrome.tabs.update(tabId, { url: "https://www.youtube.com" });
+    chrome.storage.local.get(["enabled", "lastSearchQuery"], (data) => {
+      if (!data.enabled) return;
+
+      const isWatch = url.hostname === "www.youtube.com" && url.pathname === "/watch";
+      const isRedirected = url.hostname === "www.yout-ube.com";
+
+      if (isWatch && !isRedirected) {
+        const redirectedUrl = tab.url.replace("www.youtube.com", "www.yout-ube.com");
+
+        chrome.tabs.create({ url: redirectedUrl }, () => {
+          const search = data.lastSearchQuery || "";
+          const returnUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(search)}`;
+          chrome.tabs.update(tabId, { url: returnUrl });
         });
       }
-    }
+    });
   }
 });
-
