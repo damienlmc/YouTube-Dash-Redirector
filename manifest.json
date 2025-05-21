@@ -1,15 +1,22 @@
 {
   "manifest_version": 3,
   "name": "YouTube Dash Redirector",
-  "version": "1.0",
-  "description": "Redirige les vidéos YouTube vers yout-ube.com automatiquement.",
-  "permissions": ["tabs", "scripting"],
-  "host_permissions": ["*://www.youtube.com/*"],
+  "version": "1.2",
+  "description": "Redirige les vidéos YouTube (watch) vers yout-ube.com en insérant un tiret dans le nom de domaine.",
+  "permissions": ["tabs", "scripting", "storage"],
+  "host_permissions": ["*://www.youtube.com/*", "*://www.yout-ube.com/*"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "YouTube Dash Redirector"
-  }
+    "default_popup": "popup.html",
+    "default_title": "Activer/Désactiver YouTube Dash Redirector"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.yout-ube.com/watch*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }
-
